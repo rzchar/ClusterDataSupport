@@ -35,7 +35,7 @@ public class HttpRequester {
 			httpPost.setEntity(se);
 			CloseableHttpResponse httpResponse = httpClient.execute(httpPost);
 			HttpEntity responseEntity = httpResponse.getEntity();
-			System.out.println(responseEntity);
+			//System.out.println(responseEntity);
 			httpResponse.close();
 			httpClient.close();
 		} catch (UnsupportedEncodingException e) {
@@ -49,7 +49,5 @@ public class HttpRequester {
 	}
 	
 	static public void main(String[] args){
-		String uu = "http://localhost:8080/ClusterData/servlet/AddRealTimeData";
-		JSONObject jo = new JSONObject();
 	}
 }

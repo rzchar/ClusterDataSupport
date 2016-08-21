@@ -25,8 +25,6 @@ public class DataSender {
 			jo.accumulate("mem", jojo.getDouble("memory") + l * 0.01);
 			jo.accumulate("createtime",
 				Calendar.getInstance().getTimeInMillis());
-
-			System.out.println("backend :: " + jo.toString());
 			return jo.toString();
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -35,10 +33,20 @@ public class DataSender {
 	}
 
 	static public void main(String[] args) {
+		String uu = "http://localhost:8080/ClusterData/servlet/AddRealTimeData";
 		DataSender ds = new DataSender();
+		Random r = new Random();
 		int i = 0;
 		while (i < 10) {
-			System.out.println(ds.fakeData());
+			String dt = ds.fakeData();
+			System.out.println("Send by qyd: " + dt);
+			HttpRequester.httpPostWithJSON(uu, dt);
+			try {
+				Thread.sleep(r.nextInt(200));
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			i++;
 		}
 	}
 }
