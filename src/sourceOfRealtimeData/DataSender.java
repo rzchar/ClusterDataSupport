@@ -25,7 +25,9 @@ public class DataSender {
 			jo.accumulate("mem", jojo.getDouble("memory") + l * 0.01);
 			jo.accumulate("createtime",
 				Calendar.getInstance().getTimeInMillis());
-			return jo.toString();
+			JSONObject jojori = new JSONObject();
+			jojori.accumulate("data", jo);
+			return jojori.toString();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
