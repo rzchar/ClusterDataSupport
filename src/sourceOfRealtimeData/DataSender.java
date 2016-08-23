@@ -20,10 +20,10 @@ public class DataSender {
 			JSONObject jojo = new JSONObject(fakeString);
 			JSONObject jo = new JSONObject();
 			jo.accumulate("cpu", jojo.getDouble("cpu") + cpu);
-			jo.accumulate("nts", netsent);
-			jo.accumulate("ntr", netreceive);
-			jo.accumulate("mem", jojo.getDouble("memory") + l * 0.01);
-			jo.accumulate("createtime",
+			jo.accumulate("networkSend", netsent);
+			jo.accumulate("networkReceive", netreceive);
+			jo.accumulate("memory", jojo.getDouble("memory") + l * 0.01);
+			jo.accumulate("createTime",
 				Calendar.getInstance().getTimeInMillis());
 			JSONObject jojori = new JSONObject();
 			jojori.accumulate("data", jo);
