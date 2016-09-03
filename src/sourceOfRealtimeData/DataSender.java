@@ -27,6 +27,7 @@ public class DataSender {
 				Calendar.getInstance().getTimeInMillis());
 			JSONObject jojori = new JSONObject();
 			jojori.accumulate("data", jo);
+			jojori.accumulate("machineid", "default");
 			return jojori.toString();
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -39,12 +40,12 @@ public class DataSender {
 		DataSender ds = new DataSender();
 		Random r = new Random();
 		int i = 0;
-		while (i < 10) {
+		while (i < 30) {
 			String dt = ds.fakeData();
 			System.out.println("Send by qyd: " + dt);
 			HttpRequester.httpPostWithJSON(uu, dt);
 			try {
-				Thread.sleep(r.nextInt(200));
+				Thread.sleep(r.nextInt(2000));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
