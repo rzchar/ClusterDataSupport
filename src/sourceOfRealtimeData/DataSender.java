@@ -8,28 +8,24 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class DataSender {
-	private String fakeData() {
-		String fakeString = "{\"memory\":\"3698.0\","
-			+ "\"networkReceive\":\"25255433896\",\"networkSend\":\"56800284169\","
-			+ "\"createTime\":\"1471560966101\",\"cpu\":\"0.629\"}";
+	private String fakeData(String machineId) {
 		Random r = new Random();
-		double cpu = (r.nextDouble() > 0.8) ? r.nextDouble() * 0.95
+		double cpu = (r.nextDouble() > 0.85) ? r.nextDouble() * 0.95
 			: r.nextDouble() * 0.04 + 0.03;
 		long l = Runtime.getRuntime().freeMemory();
 		long netsent = (1 << 30) + r.nextInt(1 << 28);
 		long netreceive = (1 << 30) + r.nextInt(1 << 28);
 		try {
-			JSONObject jojo = new JSONObject(fakeString);
 			JSONObject jo = new JSONObject();
-			jo.accumulate("cpu",cpu);
+			jo.accumulate("cpu", cpu);
 			jo.accumulate("networkSend", netsent);
 			jo.accumulate("networkReceive", netreceive);
-			jo.accumulate("memory", jojo.getDouble("memory") + l * 0.01);
+			jo.accumulate("memory", l);
 			jo.accumulate("createTime",
 				Calendar.getInstance().getTimeInMillis());
 			JSONObject jojori = new JSONObject();
 			jojori.accumulate("data", jo);
-			jojori.accumulate("machineid", "default");
+			jojori.accumulate("machineid", machineId);
 			return jojori.toString();
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -50,16 +46,34 @@ public class DataSender {
 			DataSender ds = new DataSender();
 			Random r = new Random();
 			while (goon) {
-				String dt = ds.fakeData();
-				System.out.println("Send by qyd: " + dt);
-				HttpRequester.httpPostWithJSON(uu, dt);
+				for (int i = 0; i < 20; i++) {
+					String dt = ds.fakeData("127.0.0." + i);
+					System.out.println("Send by qyd: " + dt);
+					new SingleInfoSender(uu, dt).start();
+				}
 				try {
-					Thread.sleep(r.nextInt(10)+200);
+					Thread.sleep(r.nextInt(10) + 200);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
 			System.out.println("fake data thread exit");
+		}
+
+		static public class SingleInfoSender extends Thread {
+			String _url;
+			String _content;
+
+			SingleInfoSender(String url, String content) {
+				_url = url;
+				_content = content;
+			}
+
+			@Override
+			public void run() {
+				HttpRequester.httpPostWithJSON(_url, _content);
+			}
+
 		}
 	}
 
@@ -70,10 +84,11 @@ public class DataSender {
 		String str;
 		while (sc.hasNext()) {
 			str = sc.nextLine();
-			if (str.equals( "exit")) {
+			if (str.equals("exit")) {
 				fd.exit();
 				break;
 			}
-		}sc.close();
+		}
+		sc.close();
 	}
 }
